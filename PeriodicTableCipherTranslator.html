@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Periodic Table Cipher Translator</title>
+</head>
+<body>
+
+	<h1>PERIODIC TABLE CIPHER TRANSLATOR</h1>
+	<div class="container">
+		<div class="MessageToCipher">
+			<label for="MtoC">Message To Cipher</label><br>
+			<textarea id="from-message" placeholder="Enter your message..." rows="4" cols="50"></textarea>
+			<textarea id="to-cipher" readonly placeholder="Encoded text goes here..." rows="4" cols="50"></textarea>
+		</div>
+		<br>
+		<div class="CipherToMessage">
+			<label for="CtoM">Cipher To Message</label><br>
+			<textarea id="from-cipher" placeholder="Enter cipher here..." rows="4" cols="50"></textarea>
+			<textarea id="to-message" readonly placeholder="Decoded message goes here" rows="4" cols="50"></textarea>
+		</div>
+	</div>
+	
+	<script>
+	const charMap = {
+	'a': 'H',
+	'b': 'He',
+	'c': 'Li',
+	'd': 'Be',
+	'e': 'B',
+	'f': 'C',
+	'g': 'N',
+	'h': 'O',
+	'i': 'F',
+	'j': 'Ne',
+	'k': 'Na',
+	'l': 'Mg',
+	'm': 'Al',
+	'n': 'Si',
+	'o': 'P',
+	'p': 'S',
+	'q': 'Cl',
+	'r': 'Ar',
+	's': 'K',
+	't': 'Ca',
+	'u': 'Sc',
+	'v': 'Ti',
+	'w': 'V',
+	'x': 'Cr',
+	'y': 'Mn',
+	'z': 'Fe'
+};
+
+
+// Reverse map (symbol → letter)
+const reverseMap = {};
+for (const letter in charMap) {
+	reverseMap[charMap[letter]] = letter;
+}
+
+// ---------- ENCODE ----------
+function encodeText() {
+	const input = document.getElementById('from-message').value.toLowerCase();
+	let counter = 1;
+
+	const result = input.split('').map(char => {
+		// Reset counter on any whitespace
+		if (/\s/.test(char)) {
+			counter = 1;
+			return char; // keep original whitespace
+		}
+
+		if (charMap[char]) {
+			const encoded = charMap[char] + counter;
+			counter++;
+			return encoded;
+		}
+
+		return char; // punctuation
+	}).join('');
+
+	document.getElementById('to-cipher').value = result;
+}
+
+// ---------- DECODE ----------
+function decodeText() {
+	const input = document.getElementById('from-cipher').value;
+	let result = '';
+	let i = 0;
+
+	while (i < input.length) {
+		const char = input[i];
+
+		if (/\s/.test(char)) {
+			result += char;
+			i++;
+			continue;
+		}
+
+		// Try 2-letter symbol
+		let symbol = input.substring(i, i + 2);
+		if (reverseMap[symbol]) {
+			result += reverseMap[symbol];
+			i += 2;
+		} else {
+			// Try 1-letter symbol
+			symbol = input[i];
+			if (reverseMap[symbol]) {
+				result += reverseMap[symbol];
+				i += 1;
+			} else {
+				result += symbol;
+				i++;
+			}
+		}
+
+		// Skip numbers
+		while (i < input.length && /\d/.test(input[i])) i++;
+	}
+
+	document.getElementById('to-message').value = result;
+}
+
+// ---------- EVENT LISTENERS ----------
+document.getElementById('from-message').addEventListener('input', encodeText);
+document.getElementById('from-cipher').addEventListener('input', decodeText);
+	</script>
+</body>
+</html>
