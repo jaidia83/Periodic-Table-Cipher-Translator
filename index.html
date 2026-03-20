@@ -65,10 +65,9 @@ function encodeText() {
 	let counter = 1;
 
 	const result = input.split('').map(char => {
-		// Reset counter on any whitespace
 		if (/\s/.test(char)) {
 			counter = 1;
-			return char; // keep original whitespace
+			return ''; // no spaces in cipher
 		}
 
 		if (charMap[char]) {
@@ -77,7 +76,7 @@ function encodeText() {
 			return encoded;
 		}
 
-		return char; // punctuation
+		return char;
 	}).join('');
 
 	document.getElementById('to-cipher').value = result;
@@ -88,35 +87,47 @@ function decodeText() {
 	const input = document.getElementById('from-cipher').value;
 	let result = '';
 	let i = 0;
+	let firstWord = true;
 
 	while (i < input.length) {
-		const char = input[i];
 
-		if (/\s/.test(char)) {
-			result += char;
+		// Try 2-letter symbol first
+		let symbol = input.substring(i, i + 2);
+		let letter = null;
+
+		if (reverseMap[symbol]) {
+			letter = reverseMap[symbol];
+			i += 2;
+		} else {
+			symbol = input[i];
+			if (reverseMap[symbol]) {
+				letter = reverseMap[symbol];
+				i += 1;
+			}
+		}
+
+		if (!letter) {
+			result += input[i];
 			i++;
 			continue;
 		}
 
-		// Try 2-letter symbol
-		let symbol = input.substring(i, i + 2);
-		if (reverseMap[symbol]) {
-			result += reverseMap[symbol];
-			i += 2;
-		} else {
-			// Try 1-letter symbol
-			symbol = input[i];
-			if (reverseMap[symbol]) {
-				result += reverseMap[symbol];
-				i += 1;
-			} else {
-				result += symbol;
-				i++;
-			}
+		// Read number after symbol
+		let numberStr = '';
+		while (i < input.length && /\d/.test(input[i])) {
+			numberStr += input[i];
+			i++;
 		}
 
-		// Skip numbers
-		while (i < input.length && /\d/.test(input[i])) i++;
+		const number = parseInt(numberStr, 10);
+
+		// Insert space if number resets to 1 (but not at start)
+		if (number === 1 && !firstWord) {
+			result += ' ';
+		}
+
+		result += letter;
+		firstWord = false;
 	}
 
 	document.getElementById('to-message').value = result;
