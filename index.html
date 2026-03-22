@@ -18,7 +18,7 @@
 		<div class="CipherToMessage">
 			<label for="CtoM">Cipher To Message</label><br>
 			<textarea id="from-cipher" placeholder="Enter cipher here..." rows="4" cols="50"></textarea>
-			<textarea id="to-message" readonly placeholder="Decoded message goes here" rows="4" cols="50"></textarea>
+			<textarea id="to-message" readonly placeholder="Decoded message goes here..." rows="4" cols="50"></textarea>
 		</div>
 	</div>
 	
@@ -50,6 +50,32 @@
 	'x': 'Cr',
 	'y': 'Mn',
 	'z': 'Fe'
+	'A': 'Co',
+	'B': 'Ni',
+	'C': 'Cu',
+	'D': 'Zn',
+	'E': 'Ga',
+	'F': 'Ge',
+	'G': 'As',
+	'H': 'Se',
+	'I': 'Br',
+	'J': 'Kr',
+	'K': 'Rb',
+	'L': 'Sr',
+	'M': 'Y',
+	'N': 'Zr',
+	'O': 'Nb',
+	'P': 'Mo',
+	'Q': 'Tc',
+	'R': 'Ru',
+	'S': 'Rh',
+	'T': 'Pd',
+	'U': 'Ag',
+	'V': 'Cd',
+	'W': 'In',
+	'X': 'Sn',
+	'Y': 'Sb',
+	'Z': 'Te'
 };
 
 
@@ -61,7 +87,7 @@ for (const letter in charMap) {
 
 // ---------- ENCODE ----------
 function encodeText() {
-	const input = document.getElementById('from-message').value.toLowerCase();
+	const input = document.getElementById('from-message').value;
 	let counter = 1;
 
 	const result = input.split('').map(char => {
